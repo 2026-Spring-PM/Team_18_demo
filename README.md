@@ -34,51 +34,129 @@ compile, no source-repo clone needed. Pick whichever fits your host:
 If `make` is not installed, replace `make <target>` with the matching
 `bash scripts/<target>.sh`.
 
-## macOS / Linux
+## macOS (Apple Silicon)
+
+Real macOS window, hardware OpenGL — fastest of the three paths.
+Uses `build/main_macos_arm64`, which dynamically links against
+Homebrew SFML 2.6.
+
+**Prerequisites** (one-time):
+
+```bash
+brew install sfml@2
+```
+
+If you skip this and run the binary anyway, dyld bails with:
 
 ```
+tried: '/opt/homebrew/opt/sfml@2/lib/libsfml-graphics.2.6.dylib' (no such file)
+```
+
+The fix is the `brew install` above.
+
+**Run:**
+
+```bash
 make run-native
 ```
 
-Launches the right prebuilt binary directly on the host. Real OS
-window, hardware OpenGL — fastest of the three paths.
+Intel Macs (`uname -m` reports `x86_64`) are not covered by the
+bundled binary — fall back to `make run`.
 
-- **macOS arm64** — uses `build/main_macos_arm64`. Requires
-  `brew install sfml@2` (the binary links against Homebrew SFML).
-- **Linux x86_64** — uses `build/main`. Requires the host to have
-  `libsfml-graphics2.6` etc. installed:
-  ```
-  sudo apt install libsfml-graphics2.6 libsfml-window2.6 libsfml-system2.6
-  ```
-- **Other OS / arch** — script errors out cleanly with a fallback
-  hint. Use `make run` instead.
+## Linux (x86_64)
 
-## Windows 11
+Real Linux window, hardware OpenGL. Uses `build/main`, which
+dynamically links against the system's libsfml 2.6.
+
+**Prerequisites** (one-time):
+
+```bash
+sudo apt update
+sudo apt install -y libsfml-graphics2.6 libsfml-window2.6 libsfml-system2.6
+```
+
+If you skip this you will see:
 
 ```
+error while loading shared libraries: libsfml-graphics.so.2.6:
+cannot open shared object file: No such file or directory
+```
+
+The fix is the `apt install` above.
+
+**Run:**
+
+```bash
+make run-native
+```
+
+Other Linux architectures (ARM, etc.) are not covered by the bundled
+binary — fall back to `make run`.
+
+## Windows 11 (WSL2 + WSLg)
+
+Native Windows window via WSLg's X11 server, hardware-accelerated.
+Runs the prebuilt Linux binary inside the class Docker image with
+WSLg's X11 sockets mounted.
+
+**Prerequisites** (one-time):
+
+1. In PowerShell as Administrator — install WSL2 + Ubuntu:
+   ```powershell
+   wsl --install -d Ubuntu-22.04
+   ```
+   Skip this if `wsl -l -v` already lists a distro.
+
+2. Install **Docker Desktop**, then in its settings enable
+   **Use the WSL 2 based engine** (General tab) and check your
+   Ubuntu distro under **Resources → WSL Integration**.
+
+3. Inside the WSL Ubuntu shell:
+   ```bash
+   sudo apt update
+   sudo apt install -y make
+   ```
+
+**Run** (inside the WSL Ubuntu shell):
+
+```bash
 make run-wslg
 ```
 
-From inside a WSL2 Ubuntu shell with Docker Desktop (WSL2 backend)
-configured. Runs the prebuilt Linux binary inside the class Docker
-image with WSLg's X11 sockets mounted, so the game draws into a real
-Windows window — no browser, hardware-accelerated.
-
-Same one-time setup as for `make run` on Windows: Docker Desktop with
-WSL2 backend, plus `sudo apt install -y make` inside the WSL Ubuntu.
+> **Low-memory WSL note.** If your WSL VM has less than 6 GiB of
+> RAM the launcher itself is fine (no compile here), but other
+> processes inside the container can still hit OOM. Bump the VM in
+> `%USERPROFILE%\.wslconfig` if you see problems:
+> ```ini
+> [wsl2]
+> memory=8GB
+> swap=4GB
+> ```
+> Then `wsl --shutdown` in PowerShell and reopen the WSL shell.
 
 ## Universal fallback — Docker + browser (`make run`)
 
-Works on every OS that runs Docker. Software-rendered, streamed via
-noVNC. Slower than the native paths above (input lag, lower frame
-rate), but it is the canonical class-submission shape and works
-anywhere Docker runs.
+Software-rendered, streamed via noVNC over a browser. Slower than
+the three native paths above (visible input lag, lower frame rate),
+but it works anywhere Docker runs and is the canonical
+class-submission shape.
 
-(1) Pull Docker Image
+**Prerequisites** (one-time):
+
+- **macOS / Linux:** Docker Desktop or `docker.io` installed, daemon
+  running. On Linux you may need to add yourself to the `docker`
+  group (`sudo usermod -aG docker $USER` then log out + back in).
+- **Windows:** same WSL2 + Docker Desktop setup as the Windows 11
+  section above — `make run` lives inside the WSL Ubuntu shell.
+
+**Run:**
+
+(1) Pull the class Docker image:
 ```
 docker pull --platform linux/amd64 chwoong/team_00_project:0.1.0
 ```
-(2) Run the app
+
+(2) Launch the game:
 
 Option A — Run automatically:
 ```
@@ -97,7 +175,7 @@ inside the container; launch the binary yourself:
 ./build/main
 ```
 
-(3) Web browser
+(3) Open the web client:
 
 http://localhost:6080/vnc.html
 
