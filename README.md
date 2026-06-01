@@ -26,18 +26,53 @@ compile, no source-repo clone needed. Pick whichever fits your host:
 
 | Your OS | Recommended | Command |
 |---|---|---|
-| Windows 11 (WSL2 + WSLg) | native window via WSLg | `make run-wslg` |
 | macOS (Apple Silicon) | native macOS window | `make run-native` |
 | Linux (x86_64, SFML installed) | native Linux window | `make run-native` |
+| Windows 11 (WSL2 + WSLg) | native window via WSLg | `make run-wslg` |
 | Anywhere else | Docker + browser | `make run` |
 
 If `make` is not installed, replace `make <target>` with the matching
 `bash scripts/<target>.sh`.
 
-## Universal — Docker + browser (`make run`)
+## macOS / Linux
+
+```
+make run-native
+```
+
+Launches the right prebuilt binary directly on the host. Real OS
+window, hardware OpenGL — fastest of the three paths.
+
+- **macOS arm64** — uses `build/main_macos_arm64`. Requires
+  `brew install sfml@2` (the binary links against Homebrew SFML).
+- **Linux x86_64** — uses `build/main`. Requires the host to have
+  `libsfml-graphics2.6` etc. installed:
+  ```
+  sudo apt install libsfml-graphics2.6 libsfml-window2.6 libsfml-system2.6
+  ```
+- **Other OS / arch** — script errors out cleanly with a fallback
+  hint. Use `make run` instead.
+
+## Windows 11
+
+```
+make run-wslg
+```
+
+From inside a WSL2 Ubuntu shell with Docker Desktop (WSL2 backend)
+configured. Runs the prebuilt Linux binary inside the class Docker
+image with WSLg's X11 sockets mounted, so the game draws into a real
+Windows window — no browser, hardware-accelerated.
+
+Same one-time setup as for `make run` on Windows: Docker Desktop with
+WSL2 backend, plus `sudo apt install -y make` inside the WSL Ubuntu.
+
+## Universal fallback — Docker + browser (`make run`)
 
 Works on every OS that runs Docker. Software-rendered, streamed via
-noVNC. This is the canonical class-submission shape.
+noVNC. Slower than the native paths above (input lag, lower frame
+rate), but it is the canonical class-submission shape and works
+anywhere Docker runs.
 
 (1) Pull Docker Image
 ```
@@ -65,39 +100,6 @@ inside the container; launch the binary yourself:
 (3) Web browser
 
 http://localhost:6080/vnc.html
-
-## Native (host SFML, no Docker)
-
-```
-make run-native
-```
-
-Launches the right prebuilt binary directly on the host. Faster than
-the Docker path (real OS window, hardware OpenGL).
-
-- **macOS arm64** — uses `build/main_macos_arm64`. Requires
-  `brew install sfml@2` (the binary links against Homebrew SFML).
-- **Linux x86_64** — uses `build/main`. Requires the host to have
-  `libsfml-graphics2.6` etc. installed:
-  ```
-  sudo apt install libsfml-graphics2.6 libsfml-window2.6 libsfml-system2.6
-  ```
-- **Other OS / arch** — script errors out cleanly with a fallback
-  hint. Use `make run` instead.
-
-## Windows native window via WSLg (`make run-wslg`)
-
-```
-make run-wslg
-```
-
-From inside a WSL2 Ubuntu shell with Docker Desktop (WSL2 backend)
-configured. Runs the prebuilt Linux binary inside the class Docker
-image with WSLg's X11 sockets mounted, so the game draws into a real
-Windows window — no browser, hardware-accelerated.
-
-Same one-time setup as for `make run` on Windows: Docker Desktop with
-WSL2 backend, plus `sudo apt install -y make` inside the WSL Ubuntu.
 
 # Game System
 
