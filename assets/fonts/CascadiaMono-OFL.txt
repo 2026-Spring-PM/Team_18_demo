@@ -1,0 +1,10 @@
+Cascadia Mono
+Copyright (c) Microsoft Corporation.
+
+Licensed under the SIL Open Font License, Version 1.1.
+Source: https://github.com/microsoft/cascadia-code
+Full license text: https://github.com/microsoft/cascadia-code/blob/main/LICENSE
+(The OFL 1.1 body is identical to assets/fonts/Galmuri-OFL.txt; only the
+copyright holder differs.)
+
+Bundled here as CascadiaMono.ttf (static Regular) and used for Latin UI text.

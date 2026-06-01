@@ -1,0 +1,12 @@
+D2Coding
+Copyright (c) NAVER Corp. (https://github.com/naver/d2codingfont)
+
+Licensed under the SIL Open Font License, Version 1.1.
+Source: https://github.com/naver/d2codingfont
+Full license text: https://github.com/naver/d2codingfont/blob/master/LICENSE
+(The OFL 1.1 body is identical to assets/fonts/Galmuri-OFL.txt; only the
+copyright holder differs.)
+
+Bundled here as D2Coding.ttf and used for Korean (Hangul) UI text. It is a
+monospace face, so it lines up cleanly next to Cascadia Mono on mixed
+Korean/Latin lines.

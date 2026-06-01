@@ -1,0 +1,6 @@
+build/*.o
+.DS_Store
+
+# Lazily-cloned source repo, fetched on first `make run-native` /
+# `make run-wslg`. Never check this in.
+source_repo/
