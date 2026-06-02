@@ -58,7 +58,11 @@ cd Team_18_demo
 
 ### 🔀 4단계 — 실행 〔2개의 방법 존재 · 하나만 선택〕
 
-#### └─ 방법 1 ⭐ WSLg로 진짜 Windows 창 (추천)
+<details open>
+<summary><b>📦 방법 1 ⭐ — WSLg로 진짜 Windows 창 (추천)</b></summary>
+
+<br>
+
 Ubuntu 터미널(`Team_18_demo` 폴더 안)에서:
 ```bash
 docker pull --platform linux/amd64 chwoong/team_00_project:0.1.0
@@ -67,7 +71,13 @@ bash scripts/run_wslg.sh
 → 잠시 후 **게임 창이 바로 뜹니다. 끝!**
 (Windows 10이거나 창이 안 뜨면 → 방법 2)
 
-#### └─ 방법 2 🌐 Docker + 브라우저 (최후의 방법)
+</details>
+
+<details open>
+<summary><b>📦 방법 2 🌐 — Docker + 브라우저 (최후의 방법)</b></summary>
+
+<br>
+
 1. 실행:
    ```bash
    docker pull --platform linux/amd64 chwoong/team_00_project:0.1.0
@@ -78,6 +88,8 @@ bash scripts/run_wslg.sh
    ```
    http://localhost:6080/vnc.html
    ```
+
+</details>
 
 ---
 
@@ -96,7 +108,11 @@ cd Team_18_demo
 
 ### 🔀 2단계 — 실행 〔2개의 방법 존재 · 하나만 선택〕
 
-#### └─ 방법 1 ⭐ Docker 없이 진짜 Mac 창 (추천)
+<details open>
+<summary><b>📦 방법 1 ⭐ — Docker 없이 진짜 Mac 창 (추천)</b></summary>
+
+<br>
+
 1. **Homebrew 설치** (이미 있으면 건너뛰기) — https://brew.sh 의 한 줄 명령을 터미널에 붙여넣기
 2. **SFML 설치** (한 번만):
    ```bash
@@ -108,7 +124,13 @@ cd Team_18_demo
    ```
    → 진짜 Mac 게임 창이 뜹니다. **끝!** (에러나면 → 방법 2)
 
-#### └─ 방법 2 🌐 Docker + 브라우저 (최후의 방법)
+</details>
+
+<details open>
+<summary><b>📦 방법 2 🌐 — Docker + 브라우저 (최후의 방법)</b></summary>
+
+<br>
+
 1. **Docker Desktop 설치** (없으면) — https://www.docker.com/products/docker-desktop/ 에서 **Apple Silicon** 버전 설치 후 실행 (메뉴바에 고래 아이콘이 뜰 때까지 기다리기)
 2. **실행:**
    ```bash
@@ -120,6 +142,8 @@ cd Team_18_demo
    ```
    http://localhost:6080/vnc.html
    ```
+
+</details>
 
 > [!NOTE]
 > 💡 Apple Silicon에서 방법 2는 amd64 에뮬레이션이라 약간 느립니다(정상). 그래서 방법 1이 더 빠릅니다.
@@ -141,7 +165,11 @@ cd Team_18_demo
 
 ### 🔀 2단계 — 실행 〔2개의 방법 존재 · 하나만 선택〕
 
-#### └─ 방법 1 ⭐ Docker 없이 진짜 창 (추천)
+<details open>
+<summary><b>📦 방법 1 ⭐ — Docker 없이 진짜 창 (추천)</b></summary>
+
+<br>
+
 1. **SFML 라이브러리 설치:**
    ```bash
    sudo apt install -y libsfml-graphics2.6 libsfml-window2.6 libsfml-system2.6
@@ -152,7 +180,13 @@ cd Team_18_demo
    ```
    → 진짜 게임 창이 뜹니다. **끝!** (라이브러리 에러나면 → 방법 2)
 
-#### └─ 방법 2 🌐 Docker + 브라우저 (최후의 방법)
+</details>
+
+<details open>
+<summary><b>📦 방법 2 🌐 — Docker + 브라우저 (최후의 방법)</b></summary>
+
+<br>
+
 1. **Docker 설치** (없으면):
    ```bash
    sudo apt install -y docker.io
@@ -170,6 +204,8 @@ cd Team_18_demo
    ```
    http://localhost:6080/vnc.html
    ```
+
+</details>
 
 ---
 
