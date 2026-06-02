@@ -1,230 +1,183 @@
-**Due date: 6/1 23:59** 
+# 🌾 Team 18 데모 게임 실행 가이드
 
-# Farm Village Simulator
+이 문서대로 따라 하면 **Team 18 데모 게임**을 실행할 수 있습니다.
+본인 OS( **Windows · macOS · Linux** )를 찾아 **위에서부터 순서대로** 진행하세요.
 
-SNU 2026 Spring — Programming Methodology, Team 18. A satirical top-down
-2D Korean university farm sim written in C++ with SFML. You play a
-student who has to earn 3,000,000 골드 to bribe enough professors to
-graduate, while tending crops, raising livestock, and building an
-automated farm.
+> 📩 **잘 안 되면 아래로 연락 주세요.**
+> - felixhuh@snu.ac.kr
+> - justin1404@snu.ac.kr
 
-This is the **demo / release repo** — it ships a prebuilt Linux/amd64
-binary plus the assets needed to run it. Source code lives at
-[`2026-Spring-PM/Team_18`](https://github.com/2026-Spring-PM/Team_18).
+각 OS는 **공통 준비 단계**를 거친 뒤, **마지막 실행 단계에 2개의 방법이 있습니다. 둘 중 하나만** 선택하세요.
 
-# Get the repo
+- **방법 1 ⭐ (추천)** — 진짜 OS 창으로 띄우기 (빠름)
+- **방법 2 🌐 (최후의 안전한 방법)** — Docker + 브라우저로 띄우기 (어디서나 됨)
 
-```
+> 👉 **방법 1을 먼저** 해보고, 막히면 **방법 2**로 하세요.
+
+> ⚠️ 한 번에 **하나의 게임만** 실행하세요. 여러 데모를 동시에 켜면 포트(6080)가 겹쳐 에러납니다.
+
+---
+
+# 💻 Windows
+
+> 🔻 **1 → 2 → 3단계는 공통**, 마지막 **4단계에 2개의 방법이 있습니다 — 하나만 선택**.
+
+### 1단계 — WSL2 설치
+1. 시작 메뉴 → **PowerShell** 우클릭 → **"관리자 권한으로 실행"**
+2. 설치돼 있는지 확인:
+   ```powershell
+   wsl -l -v
+   ```
+   - Ubuntu 등 배포판이 보이면 → **이미 설치됨, 2단계로**
+   - 아무것도 안 나오면 → 아래로 설치 후 **재부팅**:
+     ```powershell
+     wsl --install -d Ubuntu-22.04
+     ```
+     재부팅 후 Ubuntu 창이 뜨면 사용자 이름·비밀번호를 정합니다.
+
+### 2단계 — Docker Desktop 설치
+- 작업표시줄에 **고래 아이콘**이 있고 running이면 → **이미 설치됨, 3단계로**
+- 없으면:
+  1. https://www.docker.com/products/docker-desktop/ 에서 Windows용 설치
+  2. Docker Desktop 실행 → **Settings(톱니바퀴)**
+     - **General** → "Use the WSL 2 based engine" 체크
+     - **Resources → WSL Integration** → 본인 Ubuntu 배포판 스위치 켜기
+  3. **Apply & Restart**
+
+### 3단계 — 게임 파일 받기
+시작 메뉴 → **Ubuntu** 실행 후:
+```bash
+sudo apt update && sudo apt install -y git
 git clone https://github.com/2026-Spring-PM/Team_18_demo.git
 cd Team_18_demo
 ```
 
-# Run
+### 🔀 4단계 — 실행 〔2개의 방법 존재 · 하나만 선택〕
 
-All targets use the prebuilt binaries shipped in `build/`. No source
-compile, no source-repo clone needed. Pick whichever fits your host:
-
-| Your OS | Recommended | Command |
-|---|---|---|
-| macOS (Apple Silicon) | native macOS window | `make run-native` |
-| Linux (x86_64, SFML installed) | native Linux window | `make run-native` |
-| Windows 11 (WSL2 + WSLg) | native window via WSLg | `make run-wslg` |
-| Anywhere else | Docker + browser | `make run` |
-
-If `make` is not installed, replace `make <target>` with the matching
-`bash scripts/<target>.sh`.
-
-## macOS (Apple Silicon)
-
-Real macOS window, hardware OpenGL — fastest of the three paths.
-Uses `build/main_macos_arm64`, which dynamically links against
-Homebrew SFML 2.6.
-
-**Prerequisites** (one-time):
-
+#### └─ 방법 1 ⭐ WSLg로 진짜 Windows 창 (추천)
+Ubuntu 터미널(`Team_18_demo` 폴더 안)에서:
 ```bash
-brew install sfml@2
-```
-
-If you skip this and run the binary anyway, dyld bails with:
-
-```
-tried: '/opt/homebrew/opt/sfml@2/lib/libsfml-graphics.2.6.dylib' (no such file)
-```
-
-The fix is the `brew install` above.
-
-**Run:**
-
-```bash
-make run-native
-```
-
-Intel Macs (`uname -m` reports `x86_64`) are not covered by the
-bundled binary — fall back to `make run`.
-
-## Linux (x86_64)
-
-Real Linux window, hardware OpenGL. Uses `build/main`, which
-dynamically links against the system's libsfml 2.6.
-
-**Prerequisites** (one-time):
-
-```bash
-sudo apt update
-sudo apt install -y libsfml-graphics2.6 libsfml-window2.6 libsfml-system2.6
-```
-
-If you skip this you will see:
-
-```
-error while loading shared libraries: libsfml-graphics.so.2.6:
-cannot open shared object file: No such file or directory
-```
-
-The fix is the `apt install` above.
-
-**Run:**
-
-```bash
-make run-native
-```
-
-Other Linux architectures (ARM, etc.) are not covered by the bundled
-binary — fall back to `make run`.
-
-## Windows 11 (WSL2 + WSLg)
-
-Native Windows window via WSLg's X11 server, hardware-accelerated.
-Runs the prebuilt Linux binary inside the class Docker image with
-WSLg's X11 sockets mounted.
-
-**Prerequisites** (one-time):
-
-1. In PowerShell as Administrator — install WSL2 + Ubuntu:
-   ```powershell
-   wsl --install -d Ubuntu-22.04
-   ```
-   Skip this if `wsl -l -v` already lists a distro.
-
-2. Install **Docker Desktop**, then in its settings enable
-   **Use the WSL 2 based engine** (General tab) and check your
-   Ubuntu distro under **Resources → WSL Integration**.
-
-3. Inside the WSL Ubuntu shell:
-   ```bash
-   sudo apt update
-   sudo apt install -y make
-   ```
-
-**Run** (inside the WSL Ubuntu shell):
-
-```bash
-make run-wslg
-```
-
-> **Low-memory WSL note.** If your WSL VM has less than 6 GiB of
-> RAM the launcher itself is fine (no compile here), but other
-> processes inside the container can still hit OOM. Bump the VM in
-> `%USERPROFILE%\.wslconfig` if you see problems:
-> ```ini
-> [wsl2]
-> memory=8GB
-> swap=4GB
-> ```
-> Then `wsl --shutdown` in PowerShell and reopen the WSL shell.
-
-## Universal fallback — Docker + browser (`make run`)
-
-Software-rendered, streamed via noVNC over a browser. Slower than
-the three native paths above (visible input lag, lower frame rate),
-but it works anywhere Docker runs and is the canonical
-class-submission shape.
-
-**Prerequisites** (one-time):
-
-- **macOS / Linux:** Docker Desktop or `docker.io` installed, daemon
-  running. On Linux you may need to add yourself to the `docker`
-  group (`sudo usermod -aG docker $USER` then log out + back in).
-- **Windows:** same WSL2 + Docker Desktop setup as the Windows 11
-  section above — `make run` lives inside the WSL Ubuntu shell.
-
-**Run:**
-
-(1) Pull the class Docker image:
-```
 docker pull --platform linux/amd64 chwoong/team_00_project:0.1.0
+bash scripts/run_wslg.sh
+```
+→ 잠시 후 **게임 창이 바로 뜹니다. 끝!**
+(Windows 10이거나 창이 안 뜨면 → 방법 2)
+
+#### └─ 방법 2 🌐 Docker + 브라우저 (최후의 방법)
+1. 실행:
+   ```bash
+   docker pull --platform linux/amd64 chwoong/team_00_project:0.1.0
+   bash scripts/run.sh
+   ```
+   첫 실행 30초~1분. 로그가 올라오면 정상이고 **이 터미널은 끄지 마세요.**
+2. Windows 브라우저(크롬/엣지)에서 접속 → **Connect** 클릭:
+   ```
+   http://localhost:6080/vnc.html
+   ```
+
+---
+
+# 🍎 macOS  (Apple Silicon · M1/M2/M3/M4)
+
+> 🔻 **1단계는 공통**, 마지막 **2단계에 2개의 방법이 있습니다 — 하나만 선택**.
+
+### 1단계 — 게임 파일 받기
+터미널 실행( **⌘ + Space** → "터미널" ) 후:
+```bash
+git clone https://github.com/2026-Spring-PM/Team_18_demo.git
+cd Team_18_demo
+```
+(`git` 입력 시 "개발자 도구 설치" 팝업이 뜨면 **설치** 클릭)
+
+### 🔀 2단계 — 실행 〔2개의 방법 존재 · 하나만 선택〕
+
+#### └─ 방법 1 ⭐ Docker 없이 진짜 Mac 창 (추천)
+1. **Homebrew 설치** (이미 있으면 건너뛰기) — https://brew.sh 의 한 줄 명령을 터미널에 붙여넣기
+2. **SFML 설치** (한 번만):
+   ```bash
+   brew install sfml@2
+   ```
+3. **실행:**
+   ```bash
+   bash scripts/run_native.sh
+   ```
+   → 진짜 Mac 게임 창이 뜹니다. **끝!** (에러나면 → 방법 2)
+
+#### └─ 방법 2 🌐 Docker + 브라우저 (최후의 방법)
+1. **Docker Desktop 설치** (없으면) — https://www.docker.com/products/docker-desktop/ 에서 **Apple Silicon** 버전 설치 후 실행 (메뉴바에 고래 아이콘이 뜰 때까지 기다리기)
+2. **실행:**
+   ```bash
+   docker pull --platform linux/amd64 chwoong/team_00_project:0.1.0
+   bash scripts/run.sh
+   ```
+   첫 실행 30초~1분. **터미널은 끄지 마세요.**
+3. **브라우저**(크롬/사파리)에서 접속 → **Connect**:
+   ```
+   http://localhost:6080/vnc.html
+   ```
+
+> 💡 Apple Silicon에서 방법 2는 amd64 에뮬레이션이라 약간 느립니다(정상). 그래서 방법 1이 더 빠릅니다.
+
+---
+
+# 🐧 Linux  (Ubuntu / Debian 계열 · x86_64)
+
+> 🔻 **1단계는 공통**, 마지막 **2단계에 2개의 방법이 있습니다 — 하나만 선택**.
+
+### 1단계 — 게임 파일 받기
+터미널에서:
+```bash
+sudo apt update && sudo apt install -y git
+git clone https://github.com/2026-Spring-PM/Team_18_demo.git
+cd Team_18_demo
 ```
 
-(2) Launch the game:
+### 🔀 2단계 — 실행 〔2개의 방법 존재 · 하나만 선택〕
 
-Option A — Run automatically:
+#### └─ 방법 1 ⭐ Docker 없이 진짜 창 (추천)
+1. **SFML 라이브러리 설치:**
+   ```bash
+   sudo apt install -y libsfml-graphics2.6 libsfml-window2.6 libsfml-system2.6
+   ```
+2. **실행:**
+   ```bash
+   bash scripts/run_native.sh
+   ```
+   → 진짜 게임 창이 뜹니다. **끝!** (라이브러리 에러나면 → 방법 2)
+
+#### └─ 방법 2 🌐 Docker + 브라우저 (최후의 방법)
+1. **Docker 설치** (없으면):
+   ```bash
+   sudo apt install -y docker.io
+   sudo systemctl enable --now docker
+   sudo usermod -aG docker $USER
+   ```
+   마지막 줄 후 **로그아웃 → 다시 로그인** (그룹 적용). 이후 `docker ps`가 에러 없이 되면 OK.
+2. **실행:**
+   ```bash
+   docker pull --platform linux/amd64 chwoong/team_00_project:0.1.0
+   bash scripts/run.sh
+   ```
+   첫 실행 30초~1분. **터미널은 끄지 마세요.**
+3. **브라우저**에서 접속 → **Connect**:
+   ```
+   http://localhost:6080/vnc.html
+   ```
+
+---
+
+# 🛠 문제 해결 (공통)
+
+| 증상 | 해결 |
+|---|---|
+| 브라우저 페이지가 안 열림 | 게임 실행 터미널이 켜져 있는지 확인 → 로그가 다 올라온 뒤 1~2초 기다렸다 새로고침 |
+| Connect 후 까만 화면 | 잠깐 기다렸다 브라우저 새로고침 |
+| `port is already allocated` / `Bind for ...:6080 failed` | 6080을 쓰는 컨테이너가 이미 있음 → 아래로 정리 후 재실행 |
+| Mac/Windows Docker 에러 | Docker Desktop이 실행 중(고래 아이콘 running)인지 먼저 확인 |
+| 방법 1(native)에서 SFML 에러 | 설치 명령 다시 확인하거나, 그냥 **방법 2(브라우저)**로 가면 확실함 |
+
+**포트 충돌 정리 명령:**
+```bash
+docker ps
+docker rm -f farm-sim-team18-container
 ```
-make run
-```
-or `bash scripts/run.sh`. This starts the container and immediately
-launches `build/main`.
-
-Option B — Enter the container first, then run manually:
-```
-make run-shell
-```
-or `bash scripts/run_shell.sh`. This drops you into a bash shell
-inside the container; launch the binary yourself:
-```
-./build/main
-```
-
-(3) Open the web client:
-
-http://localhost:6080/vnc.html
-
-# Game System
-
-### (1) GUI & Controls
-- 2D top-down farm/village sim built with SFML
-- Move with **WASD**, sprint with **Shift**, interact with **E**
-- Left-click uses the held tool; **1–6** or mouse wheel cycles the hotbar
-- **I** Inventory, **B** Build menu, **M** Market, **T** Tech tree, **Esc** Pause
-
-### (2) Goal — graduate by bribing professors
-- Earn **3,000,000 골드** by the end of the term and turn it in to 대표조교 (TA) to trigger the ending
-- 16 sequential quests from the TA walk the player through every system (tilling, livestock, compost, cooking, power, automation)
-- After the main chain, **대학원생 박준서** (a graduate student, appears outdoors at night only) unlocks 3 post-graduation automation quests
-
-### (3) Tile Farming
-- Till → water → fertilise → sow → grow → harvest, per-tile state
-- **3 crops** (Wheat / Carrot / Corn) × **5 seed tiers** (Lv0..Lv4); higher-tier seeds need Crop Lab / Gene Sequencer to produce and give bigger yield
-- **Fertiliser ladder**: Compost Lv0 → Lv1 → Lv2 → Lv3 → Lv4. Each tier shortens grow time further
-
-### (4) Livestock
-- Chicken / Sheep / Cow bought at the Hardware Store and placed in animal pens
-- Daily product output (Egg / Wool / Milk) + passive Compost Lv0 generation
-- Manual-merge breeding: combine two animals of the same tier to produce one at the next tier, up to Lv4
-
-### (5) Cooking
-- **Prep Table → Flour, Stone Oven → Bread, Cheese Machine → Cheese**
-- Cooked goods sell for several times the raw-ingredient price — the highest gold-per-effort path
-
-### (6) Power Grid & Water Network
-- **Grid Hookup + Power Poles** with Factorio-style BFS energisation
-- Power-gated devices (Biodigester, Synth Reactor, Water Pump, automation bots) only run when wired
-- **Water network**: Lake → Water Pump → Pipe → Sprinkler; auto-waters a 3×3 zone around each sprinkler
-
-### (7) Automation
-- **Pipe linker** connects device output to device input — items flow automatically
-- **Auto-Planter / Harvester Bot / Auto-Spreader** operate on fixed zones around each bot, all power-gated and Auto-only
-
-### (8) Market & Economy
-- Inside the Market building: a **stock-market sim** (4 abstract assets with OU price evolution, news events, options-style portfolio — open with **M**) running alongside the **fixed-price hardware/livestock store**
-- Crop prices fluctuate by season and time-of-day
-- **Affinity-gated side quests** from outdoor village NPCs unlock at thresholds; talking to villagers builds affinity over time
-
-### (9) Day / Night & Weather
-- Four phases per day (Morning / Noon / Evening / Night) with ambient lighting changes
-- NPCs follow per-character routines — some only appear at certain times
-- Weather (Clear / Rain) is driven by the same event scheduler as the market; rain auto-waters fields
-
-### (10) Tutorial system
-- ~22 contextual tutorials fire on first encounter (entering the farm, opening the build menu, crafting the first compost, etc)
-- All seen tutorials persist across save/load and are **replayable** from the Quest Tracker (top-left) → **Rewatch Tutorials** button
